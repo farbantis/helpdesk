@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+{#        {% block title %}#}
+{#            Title#}
+{#        {% endblock %}#}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'tasks/css/main.css' %}">
+    {% block jstop %}
+    {% endblock %}
+</head>
+<body>
+
+{% block main %}
+
+{% endblock %}
+
+
+{% block admin %}
+{% endblock %}
+
+</body>
+</html>

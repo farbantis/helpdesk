@@ -1,0 +1,50 @@
+{#{% extends 'cafe/base.html' %}#}
+{#{% load static %}#}
+{##}
+{#{% block title %}#}
+{#    История заказов#}
+{#{% endblock %}#}
+{##}
+{#{% block main_content %}#}
+{#    <div class="container">#}
+{#        <div class="history_row">#}
+{#            {% for user_order in user_orders %}#}
+{#                <div class="history_info">#}
+{#                    <div class="history_order_card">#}
+{#                        <p>Номер заказа: <span class="order_cart_number">{{ user_order.transaction_id }}</span> </p>#}
+{#                        <p>Способ оплаты:</p>#}
+{#                        <p>Дата заказа: <span class="order_card_date">{{ user_order.date_ordered }}</span></p>#}
+{#                        <p>Дата доставки:</p>#}
+{#                        <p>Статус заказа: <span class="order_card_date">#}
+{#                            {% if user_order.is_completed %}#}
+{#                                Завершен#}
+{#                            {% else %}#}
+{#                                Не завершен#}
+{#                            {% endif %} </span></p>#}
+{#                    </div>#}
+{#                    <div class="history_items">#}
+{#                        {% for item in user_order.orderitems_set.all %}#}
+{#                            <div class="history_items_wrapper">#}
+{#                                <div class="history_picture">#}
+{#                                    <img src="{{ item.product.picture.url }}" width="100px" alt="prod pict">#}
+{#                                </div>#}
+{#                                <div class="history_data_wrapper">#}
+{#                                    <div class="history_product_name">#}
+{#                                        {{ item.product }}#}
+{#                                    </div>#}
+{#                                    <div>#}
+{#                                        {{ item.quantity }} шт#}
+{#                                    </div>#}
+{#                                    <div>#}
+{#                                        {{ item.get_items_cost }} грн#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endfor %}#}
+{#                    <a href="{% url 'cafe:cart' %}"><div class="history_repeat">Повторить заказ</div></a>#}
+{#                    </div>#}
+{#            </div>#}
+{#                {% endfor %}#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

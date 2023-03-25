@@ -1,0 +1,44 @@
+{#{% extends 'cafe/base.html' %}#}
+{#{% load static %}#}
+{##}
+{#{% block title %}#}
+{#    edit user info#}
+{#{% endblock %}#}
+{##}
+{#{% block main_content %}#}
+{#        <div class="container">#}
+{#        {% if form.errors %}#}
+{#            <p> {{ form.errors }} {{ form.has_error }} {{ form.non_field_errors }} </p>#}
+{#        {% endif %}#}
+{#        <div class="row_login">#}
+{#            <div class="login_picture login_align">#}
+{#                <img class="login_picture_inner" src="{% static 'account/images/details/register/person.svg' %}" alt="img">#}
+{#            </div>#}
+{#            <div class="login_title">#}
+{#                Изменение личных данных#}
+{#            </div>#}
+{#            <form method="post">#}
+{#                {% csrf_token %}#}
+{#                <div class="login_username login_align">#}
+{#                    {{ form.username.errors }}#}
+{#                    {{ user_form.first_name }}#}
+{#                </div>#}
+{#                <div class="login_username login_align">#}
+{#                    {{ user_form.last_name.errors }}#}
+{#                    {{ user_form.last_name }}#}
+{#                </div>#}
+{#                <div class="login_username login_align">#}
+{#                    {{ user_form.email.errors }}#}
+{#                    {{ user_form.email }}#}
+{#                </div>#}
+{#                <div class="login_username login_align">#}
+{#                    {{ user_form.email.errors }}#}
+{#                    {{ customer_form.birth_date }}#}
+{#                </div>#}
+{#                <div class="login_btn">#}
+{#                    <button class="login_btn_inner" type="submit">ИЗМЕНИТЬ</button>#}
+{#                </div>#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

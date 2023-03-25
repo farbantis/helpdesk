@@ -1,0 +1,41 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block main %}
+
+    <div class="container">
+        <div class="row_login">
+            <div class="login_picture login_align">
+                <img class="login_picture_inner" src="{% static 'account/images/person.svg' %}" alt="img">
+            </div>
+            <div class="login_title">
+                Войти в личный кабинет
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="login_username login_align">
+                    {{ form.username.errors }}
+                    {{ form.username }}
+                </div>
+                <div class="login_password login_align">
+                    {{ form.password }}
+                </div>
+                <div class="login_forgot login_align">
+                    <a class="login_forgot_inner" href="#">Забыли пароль</a>
+                </div>
+                <div class="login_btn">
+                    <button class="login_btn_inner" type="submit">ВОЙТИ</button>
+                </div>
+            </form>
+            <div class="login_register login_align">
+                Впервые у нас? &nbsp <a href="{% url 'account:register' %}" class="login_register_inner"> Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+
+
