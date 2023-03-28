@@ -9,13 +9,46 @@ class Task(models.Model):
         DECLINED = 'D', _('declined')
         IN_PROGRESS = 'P', _('in progress')
 
-    class Importance(models.TextChoices):
+    class Priority(models.TextChoices):
         LOW = 'L', _('low')
         MEDIUM = 'M', _('medium')
         HIGH = 'H', _('high')
 
-    author = models.OneToOneField(User, on_delete=models.PROTECT)
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
+    title = models.CharField(max_length=255, default='')
     message = models.TextField()
     status = models.CharField(max_length=1, choices=Status.choices, default=Status.IN_PROGRESS)
-    importance = models.CharField(max_length=1, choices=Importance.choices, default=Importance.LOW)
-    #comments = models.
+    priority = models.CharField(max_length=1, choices=Priority.choices, default=Priority.LOW)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_declined(self):
+        return self.status == self.Status.DECLINED
+
+    @property
+    def get_status(self):
+        return dict(self.Status.choices)[self.status]
+
+    @property
+    def get_priority(self):
+        return dict(self.Priority.choices)[self.priority]
+
+
+class ReasonsToDecline(models.Model):
+    task = models.OneToOneField(Task, on_delete=models.CASCADE)
+    reason = models.TextField()
+
+    def __str__(self):
+        return self.task
+
+
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
+    text_of_comment = models.TextField()
+    date_of_comment = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author} commented {self.task}'

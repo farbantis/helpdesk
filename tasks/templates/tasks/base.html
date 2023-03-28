@@ -5,16 +5,44 @@
 <head>
     <meta charset="UTF-8">
     <title>
-{#        {% block title %}#}
-{#            Title#}
-{#        {% endblock %}#}
+        {#        {% block title %}#}
+        {#            Title#}
+        {#        {% endblock %}#}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{% static 'tasks/css/main.css' %}">
-    {% block jstop %}
-    {% endblock %}
 </head>
 <body>
+
+<div class="container">
+    <div class="menu">
+        {% if request.user.is_staff %}
+            Navigation:
+            {#    <div><a href="{% url 'shop:review_merchandise' %}">List of merchandise</a></div>#}
+            {#    <div><a href="{% url 'shop:add_merchandise' %}">Add merchandise</a></div>#}
+            {#    <div><a href="{% url 'shop:returned_merchandise' %}">Check returns</a></div>#}
+        {% else %}
+            {% if request.user.is_authenticated %}
+                Navigation:
+                <div>Welcome {{ request.user.username }}</div>
+                <div><a href="{% url 'task:index' %}">View all tasks</a></div>
+                <div><a href="{% url 'task:task_create' %}">Creat a new task</a></div>
+                <div><a href="{% url 'account:logout' %}">LogOut</a></div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="main">
+        {% if request.user.is_staff %}
+            {% block staff %}
+            {% endblock %}
+        {% else %}
+            {% block user %}
+            {% endblock %}
+        {% endif %}
+    </div>
+</div>
+
+
 
 {% block main %}
 

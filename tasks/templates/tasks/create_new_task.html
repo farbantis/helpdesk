@@ -1,0 +1,26 @@
+{% extends 'tasks/base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% block user %}
+    {#    {% include 'messages_inclusion.html' %}#}
+    <div class="container"
+         style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-around">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">CREATE</button>
+            </form>
+    </div>
+
+
+{% endblock %}
+
+</body>
+</html>

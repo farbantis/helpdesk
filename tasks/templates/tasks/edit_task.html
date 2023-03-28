@@ -1,0 +1,12 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block user %}
+    <div class="container">
+        <form action="" method="post">
+            {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">SAVE CHANGES</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,6 +1,20 @@
+body {
+  height: 100%;
+  width: 100%;
+}
+
 .container {
-    width: 1200px;
-    margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  width: 800px;
+  margin: 20px 50px;
+}
+.menu {
+  width: 150px;
+  margin-right: 10px;
+}
+.main {
+  margin: 0 auto;
 }
 
 .login_username_inner{
@@ -205,4 +219,79 @@ input:focus {
 .login_align {
   display: flex;
   justify-content: center;
+}
+
+.card{
+  border: 1px solid black;
+  width: 500px;
+  padding: 5px;
+}
+.card_header {
+  width: 350px;
+}
+.card_status {
+  text-align: right;
+}
+.card_importance {
+  text-align: right;
+}
+.card_wrapper {
+  display: flex;
+}
+.card_form {
+  padding: 5px;
+  margin-bottom: 10px;
+}
+.comment_form {
+  margin-bottom: 20px;
+}
+
+.comment_body {
+  text-align: right;
+}
+
+.card-title{
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: 10px;
+  text-align: center;
+  overflow: hidden;
+  height: 45px;
+}
+.card-descriptions{
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 19px;
+  text-align: center;
+  margin-top: 5px;
+  padding: 5px 5px;
+  height: 80px;
+  overflow: hidden;
+}
+
+
+.card-btn{
+  max-width: 140px;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 14px;
+  color: #FFFFFF;
+  background: #00AC4E;
+  border-radius: 5px;
+  padding: 10px 27px;
+  margin: 5px auto;
+  border: 1px solid transparent;
+}
+
+.card-btn:hover {
+  border: 1px solid red;
+  color: blue;
+}
+
+.card-btn:active {
+  border: 5px solid red;
+  color: blue;
 }
