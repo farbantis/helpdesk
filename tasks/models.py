@@ -19,9 +19,11 @@ class Task(models.Model):
     message = models.TextField()
     status = models.CharField(max_length=1, choices=Status.choices, default=Status.IN_PROGRESS)
     priority = models.CharField(max_length=1, choices=Priority.choices, default=Priority.LOW)
+    is_reclaimed = models.BooleanField(default=False)
+    is_finally_rejected = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return f'{self.title}, {self.status}'
 
     @property
     def is_declined(self):
@@ -38,16 +40,16 @@ class Task(models.Model):
 
 class ReasonsToDecline(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE)
-    reason = models.TextField()
+    reason = models.TextField(blank=True)
 
     def __str__(self):
-        return self.task
+        return str(self.task)
 
 
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.PROTECT)
-    text_of_comment = models.TextField()
+    text_of_comment = models.TextField(verbose_name='Your comment')
     date_of_comment = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

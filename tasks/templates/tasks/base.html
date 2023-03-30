@@ -18,9 +18,10 @@
     <div class="menu">
         {% if request.user.is_staff %}
             Navigation:
-            {#    <div><a href="{% url 'shop:review_merchandise' %}">List of merchandise</a></div>#}
-            {#    <div><a href="{% url 'shop:add_merchandise' %}">Add merchandise</a></div>#}
-            {#    <div><a href="{% url 'shop:returned_merchandise' %}">Check returns</a></div>#}
+            <div>Admin dashboard, welcome {{ request.user.username }}</div>
+            <div><a href="{% url 'task:admin_task' %}">Active tasks</a></div>
+            <div><a href="{% url 'task:admin_task_declined' %}">Declined tasks</a></div>
+            <div><a href="{% url 'account:logout' %}">LogOut</a></div>
         {% else %}
             {% if request.user.is_authenticated %}
                 Navigation:
@@ -32,13 +33,13 @@
         {% endif %}
     </div>
     <div class="main">
-        {% if request.user.is_staff %}
-            {% block staff %}
-            {% endblock %}
-        {% else %}
-            {% block user %}
-            {% endblock %}
-        {% endif %}
+        {#        {% if request.user.is_staff %}#}
+        {% block staff %}
+        {% endblock %}
+        {#        {% else %}#}
+        {% block user %}
+        {% endblock %}
+        {#        {% endif %}#}
     </div>
 </div>
 

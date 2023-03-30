@@ -17,29 +17,26 @@
                     <div class="card_info">
                         <div class="card_status">status: <strong>{{ task.get_status }}</strong></div>
                         <div class="card_importance">priority: <strong>{{ task.get_priority }}</strong></div>
-
                     </div>
                 </div>
                 <div class="card_text">{{ task.message }}</div>
                 <div class="card_form">
-                    <a href="{% url 'task:task_edit' pk=task.pk %}">CHANGE</a>
-                    {% if task.is_declined %}
-                        <a href="{% url 'task:task_edit' pk=task.pk %}">RESTORE</a>
-                    {% endif %}
+                        <a href="{% url 'task:task_edit' pk=task.pk %}">CHANGE</a>
+                        {% if task.is_declined %}
+                            <a href="{% url 'task:task_restore' pk=task.pk %}">RESTORE</a>
+                        {% endif %}
                 </div>
             </div>
             <div class="card_comments">
                 {% for comment in task.comment_set.all %}
                     <div class="comment_header"><i>{{ comment.author }} {% if comment.author.is_staff %}, the admin
-
                     {% endif %}  on {{ comment.date_of_comment }} wrote</i></div>
                     <div class="comment_body"><strong>{{ comment.text_of_comment }}</strong></div>
-
                 {% endfor %}
                 {% if task.status == task.Status.IN_PROGRESS %}
                     <form class="comment_form" method="post">
                         {% csrf_token %}
-                        <input type="text" name="text_of_comment"/>
+                        {{ form.as_p }}
                         <input type="hidden" name="task_id" value="{{ task.id }}">
                         <button type="submit">Submit your comment</button>
                     </form>

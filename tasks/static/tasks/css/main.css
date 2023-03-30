@@ -225,6 +225,7 @@ input:focus {
   border: 1px solid black;
   width: 500px;
   padding: 5px;
+  margin-top: 15px;
 }
 .card_header {
   width: 350px;
@@ -240,7 +241,7 @@ input:focus {
 }
 .card_form {
   padding: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .comment_form {
   margin-bottom: 20px;

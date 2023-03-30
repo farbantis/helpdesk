@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import User
 from account.forms import UserLoginForm, UserRegistrationForm
@@ -41,7 +42,7 @@ class RegisterUserView(CreateView):
 
 class UserLogoutView(LogoutView):
     """logout user"""
-    #next_page = reverse_lazy('cafe:main_page')
+    next_page = reverse_lazy('account:login')
 #
 #
 # class UserPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
