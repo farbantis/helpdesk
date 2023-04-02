@@ -47,7 +47,7 @@ class ReasonsToDecline(models.Model):
 
 
 class Comment(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     text_of_comment = models.TextField(verbose_name='Your comment')
     date_of_comment = models.DateTimeField(auto_now_add=True)

@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="card_comments">
-                {% for comment in task.comment_set.all %}
+                {% for comment in task.comments.all %}
                     <div class="comment_header"><i>{{ comment.author }} {% if comment.author.is_staff %}, the admin
                     {% endif %}  on {{ comment.date_of_comment }} wrote</i></div>
                     <div class="comment_body"><strong>{{ comment.text_of_comment }}</strong></div>
