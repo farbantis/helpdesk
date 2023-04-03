@@ -8,16 +8,14 @@ from account.forms import UserLoginForm, UserRegistrationForm
 
 
 class UserLoginView(LoginView):
-    """logging user"""
+
     template_name = 'account/user_login.html'
     form_class = UserLoginForm
-    # next_page = 'cafe:main_page'
 
     def get_redirect_url(self):
-        """Return the user-originating redirect URL if it's safe."""
+        """redirects user depending on role"""
         if self.request.user.is_staff:
-            pass
-            # redirect_to = '/admin_panel/'
+            return '/admin_tasks/'
         else:
             return '/'
 
@@ -37,19 +35,11 @@ class RegisterUserView(CreateView):
             return redirect('account:login')
         else:
             form = UserRegistrationForm()
+            messages.add_message(request, messages.ERROR, f'wrong data, please re-enter')
         return render(request, 'account/user_register.html', {'form': form})
 
 
 class UserLogoutView(LogoutView):
     """logout user"""
     next_page = reverse_lazy('account:login')
-#
-#
-# class UserPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
-#     template_name = 'account/change_password.html'
-#     success_url = reverse_lazy('cafe:user_dashboard')
-#     success_message = 'Пароль пользователя изменен'
-#
-#
-# class UserPasswordChangeDoneView(PasswordChangeDoneView):
-#     pass
+

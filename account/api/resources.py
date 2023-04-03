@@ -1,9 +1,15 @@
 from django.contrib.auth import logout
 from rest_framework import viewsets, permissions
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from account.api.serializers import CreateUserSerializer
 from account.models import User
+
+
+class UserAuthToken(ObtainAuthToken):
+    def get_success_url(self):
+        pass
 
 
 class CreateUserAPIView(CreateAPIView):

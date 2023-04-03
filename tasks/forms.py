@@ -30,7 +30,9 @@ class DenyForm(forms.ModelForm):
 
     def clean(self):
         if 'decision' in self.data:
+            print(f'validating decision {self.data}')
             decision = self.data['decision']
+            print(f'and it is {decision}')
             cd = super().clean()
             reason = cd['reason']
             if (decision == 'False') and (not reason):

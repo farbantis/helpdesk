@@ -91,15 +91,15 @@ STATIC_ROOT = BASE_DIR / 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 60  # 60 seconds or 1 minute
-SESSION_SAVE_EVERY_REQUEST = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_COOKIE_AGE = 60  # 60 seconds or 1 minute
+# SESSION_SAVE_EVERY_REQUEST = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_AUTH_TOKEN_EXPIRY': datetime.timedelta(minutes=1)
+    #'DEFAULT_AUTH_TOKEN_EXPIRY': datetime.timedelta(minutes=1)
 }
 
 # JWT_AUTH = {

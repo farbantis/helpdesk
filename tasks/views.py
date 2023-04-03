@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
 from tasks.forms import TaskCreateForm, CommentForm, DenyForm, DenyFormNoReason
@@ -26,11 +27,6 @@ class TasksView(UserPassesTestMixin, ListView):
 
     def handle_no_permission(self):
         return redirect('account:login')
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super(TasksView, self).get_context_data()
-    #     context['comments'] = Comment.objects.filter(task__author=self.request.user)
-    #     return context
 
     def get_queryset(self):
         return self.model.objects.filter(author=self.request.user).filter(is_reclaimed=False)
@@ -61,8 +57,10 @@ class TaskCreateView(UserPassesTestMixin, CreateView):
             new_task.author_id = request.user.id
             new_task.status = Task.Status.IN_PROGRESS
             new_task.save()
-            # messages.add_message(request, messages.SUCCESS, f'user was created and granted {new_user.wallet}$')
+            messages.add_message(request, messages.SUCCESS, f'task was created')
             return redirect('task:index')
+        else:
+            messages.add_message(request, messages.ERROR, f'there was an error while creating the task')
         return render(request, 'tasks/create_new_task.html', {'form': form})
 
     def test_func(self):
@@ -101,9 +99,11 @@ class AdminTasksView(UserPassesTestMixin, ListView):
             if form.is_valid():
                 create_comment(request)
         elif 'decision' in request.POST:
+            print('there is a decision...')
             form_deny = DenyForm(request.POST)
             if form_deny.is_valid():
                 cd = form_deny.cleaned_data
+                print(f'and it is {cd["decision"]}')
                 task = Task.objects.get(id=request.POST.get('task_id'))
                 if cd['decision'] == 'False':
                     ReasonsToDecline.objects.create(reason=cd['reason'], task=task)
