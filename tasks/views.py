@@ -4,19 +4,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
-from tasks.forms import TaskCreateForm, CommentForm, DenyForm, DenyFormNoReason
-from tasks.models import Task, Comment, ReasonsToDecline
+from tasks.forms import TaskCreateForm, CommentForm, AdminAcceptDenyForm
+from tasks.mixins import CreateCommentMixin
+from tasks.models import Task, ReasonsToDecline
 
 
-def create_comment(request):
-    Comment.objects.create(
-        task=Task.objects.get(id=request.POST.get('task_id')),
-        author=request.user,
-        text_of_comment=request.POST.get('text_of_comment')
-    )
-
-
-class TasksView(UserPassesTestMixin, ListView):
+class TasksView(CreateCommentMixin, UserPassesTestMixin, ListView):
     template_name = 'tasks/index.html'
     context_object_name = 'tasks'
     model = Task
@@ -32,7 +25,7 @@ class TasksView(UserPassesTestMixin, ListView):
         return self.model.objects.filter(author=self.request.user).filter(is_reclaimed=False)
 
     def post(self, request):
-        create_comment(request)
+        self.create_comment(request)
         return redirect('task:index')
 
 
@@ -83,11 +76,11 @@ class TaskEditView(UserPassesTestMixin, UpdateView):
         return redirect('account:login')
 
 
-class AdminTasksView(UserPassesTestMixin, ListView):
+class AdminTasksView(CreateCommentMixin, UserPassesTestMixin, ListView):
     template_name = 'tasks/index_admin.html'
     context_object_name = 'tasks'
     model = Task
-    extra_context = {'form_deny': DenyForm, 'form': CommentForm, 'form_deny_no_reason': DenyFormNoReason}
+    extra_context = {'form_accept_deny': AdminAcceptDenyForm, 'form': CommentForm}
     permission_required = ('is_staff', )
 
     def get_queryset(self):
@@ -97,21 +90,23 @@ class AdminTasksView(UserPassesTestMixin, ListView):
         if 'text_of_comment' in request.POST:
             form = CommentForm(request.POST)
             if form.is_valid():
-                create_comment(request)
+                self.create_comment(request)
         elif 'decision' in request.POST:
-            print('there is a decision...')
-            form_deny = DenyForm(request.POST)
-            if form_deny.is_valid():
-                cd = form_deny.cleaned_data
-                print(f'and it is {cd["decision"]}')
-                task = Task.objects.get(id=request.POST.get('task_id'))
-                if cd['decision'] == 'False':
-                    ReasonsToDecline.objects.create(reason=cd['reason'], task=task)
-                    task.status = Task.Status.DECLINED
-                    task.save()
-                else:
+            form_accept_deny = AdminAcceptDenyForm(request.POST)
+            if form_accept_deny.is_valid():
+                cd = form_accept_deny.cleaned_data
+                task = get_object_or_404(Task, pk=request.POST.get('task_id'))
+                if cd['decision'] == 'True':
                     task.status = Task.Status.CONFIRMED
                     task.save()
+                else:
+                    reason = cd['reason']
+                    if reason:
+                        task.status = Task.Status.DECLINED
+                        task.save()
+                        ReasonsToDecline.objects.create(task_id=task.id, reason=reason)
+                    else:
+                        messages.add_message(request, messages.ERROR, f'You must indicate reason to decline')
         return redirect('task:admin_task')
 
     def test_func(self):
@@ -124,18 +119,22 @@ class AdminTasksView(UserPassesTestMixin, ListView):
 class AdminTasksDeclinedView(AdminTasksView):
 
     def get_queryset(self):
-        return self.model.objects.filter(is_reclaimed=True).filter(is_finally_rejected=False)
+        return self.model.objects\
+            .filter(status=Task.Status.DECLINED)\
+            .filter(is_reclaimed=True)\
+            .filter(is_finally_rejected=False)
 
     def post(self, request):
-        form_deny_no_reason = DenyFormNoReason(request.POST)
-        print('within needed form')
-        if form_deny_no_reason.is_valid():
-            print('form was valid')
-            cd = form_deny_no_reason.cleaned_data
-            task = Task.objects.get(id=request.POST.get('task_id'))
-            if cd['decision'] == 'False':
+        form_accept_deny = AdminAcceptDenyForm(request.POST)
+        if form_accept_deny.is_valid():
+            cd = form_accept_deny.cleaned_data
+            task = get_object_or_404(Task, pk=request.POST.get('task_id'))
+            if cd['decision'] == 'True':
+                task.status = Task.Status.CONFIRMED
+                task.save()
+                messages.add_message(request, messages.SUCCESS, f'the task has been confirmed')
+            else:
                 task.is_finally_rejected = True
                 task.save()
-            else:
-                task.status = Task.Status.CONFIRMED
+                messages.add_message(request, messages.SUCCESS, f'the task has been finally rejected')
         return redirect('task:admin_task_declined')

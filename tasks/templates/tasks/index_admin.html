@@ -3,7 +3,7 @@
 
 
 {% block user %}
-    {#    {% include 'messages_inclusion.html' %}#}
+    {% include 'tasks/messages.html' %}
     <div>
         {% for task in tasks %}
             <div class="card">
@@ -19,18 +19,20 @@
                 </div>
                 <div class="card_text">{{ task.message }}</div>
                 <div class="card_form">
-                        <form method="post" action="">
-                            {% csrf_token %}
-                            {% if task.is_reclaimed %}
-                                {{ form_deny_no_reason }}
-                            {% else %}
-                                {{form_deny.as_p}}
-                             {% endif %}
-                            <input type="hidden" name="task_id" value="{{ task.id }}">
-                            <button type="submit" onclick="document.getElementById('id_decision').value='True'">ACCEPT</button>
-                            <button type="submit" onclick="document.getElementById('id_decision').value='False'">DECLINE</button>
-                        </form>
-
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        {% if task.is_reclaimed %}
+                            {{ form_accept_deny.decision }}
+                        {% else %}
+                            {{ form_accept_deny.reason }}
+                            {{ form_accept_deny.decision }}
+                        {% endif %}
+                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                        <button type="submit" onclick="document.getElementById('id_decision').value='True'">ACCEPT
+                        </button>
+                        <button type="submit" onclick="document.getElementById('id_decision').value='False'">DECLINE
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="card_comments">
@@ -42,7 +44,7 @@
                 {% if task.status == task.Status.IN_PROGRESS %}
                     <form class="comment_form" method="post">
                         {% csrf_token %}
-                        {{form.as_p}}
+                        {{ form.as_p }}
                         <input type="hidden" name="task_id" value="{{ task.id }}">
                         <button type="submit">Submit your comment</button>
                     </form>

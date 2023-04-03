@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from tasks.models import Task, Comment, ReasonsToDecline
 
 
@@ -18,7 +17,7 @@ class CommentForm(forms.ModelForm):
         }
 
 
-class DenyForm(forms.ModelForm):
+class AdminAcceptDenyForm(forms.ModelForm):
     decision = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
@@ -27,22 +26,3 @@ class DenyForm(forms.ModelForm):
         widgets = {
             'reason': forms.Textarea(attrs={'rows': 1, 'cols': 50})
         }
-
-    def clean(self):
-        if 'decision' in self.data:
-            print(f'validating decision {self.data}')
-            decision = self.data['decision']
-            print(f'and it is {decision}')
-            cd = super().clean()
-            reason = cd['reason']
-            if (decision == 'False') and (not reason):
-                raise ValidationError('you should fill in the reason')
-
-
-class DenyFormNoReason(forms.ModelForm):
-    decision = forms.CharField(widget=forms.HiddenInput)
-
-    class Meta:
-        model = ReasonsToDecline
-        fields = ('decision', )
-
