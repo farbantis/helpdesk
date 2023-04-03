@@ -1,14 +1,27 @@
 from rest_framework import viewsets, permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.permissions import BasePermission
 
 from tasks.api.serializers import TaskRetrieveModifySerializer, TaskCreateSerializer, CommentCreateSerializer, \
-    AdminAcceptDeclineTaskSerializer
+    AdminAcceptDeclineTaskSerializer, TaskReclaimSerializer
 from tasks.models import Task, Comment
 
 
-class TasksViewSet(viewsets.ModelViewSet):
+class Tested(ListAPIView):
+    serializer_class = TaskCreateSerializer
     queryset = Task.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+
+
+class IsOrdinaryUser(BasePermission):
+    """selects only logged in users who are not staff"""
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and not request.user.is_staff
+
+
+class TasksViewSet(viewsets.ModelViewSet):
+    """displays, creates and modifies user tasks"""
+    queryset = Task.objects.all()
+    permission_classes = [IsOrdinaryUser]
     http_method_names = ['get', 'post', 'patch']
 
     def get_queryset(self):
@@ -18,7 +31,7 @@ class TasksViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         print(f'self action is {self.action}')
-        if self.action in ['update', 'list', 'partial_update']:
+        if self.action in ['list', 'partial_update']:
             return TaskRetrieveModifySerializer
         elif self.action in ['create']:
             return TaskCreateSerializer
@@ -27,28 +40,50 @@ class TasksViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
+class TaskReclaimAPIView(UpdateAPIView):
+    """
+    changes status to reclaimed for declined tasks, sets is_reclaimed to True
+    and gives error if required to set is_relaimed to False
+    """
+    serializer_class = TaskReclaimSerializer
+    queryset = Task.objects.all()
+    permission_classes = [IsOrdinaryUser]
+
+
 class AddCommentAPIView(CreateAPIView):
+    """adds comment to a task by user or admin"""
     serializer_class = CommentCreateSerializer
     queryset = Comment.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
 class AdminTasksListAPIView(ListAPIView):
-    #queryset = super(AdminTasksListAPIView).get_queryset().filter(is_finally_rejected=False).filter(is_reclaimed = False)
+    """shows all admin tasks except for declined"""
+    queryset = Task.objects.all()
+    serializer_class = TaskRetrieveModifySerializer
+    permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Task.objects.all()
-
-
-class AdminAcceptDeclineTaskAPIView(UpdateAPIView):
-    serializer_class = AdminAcceptDeclineTaskSerializer
-    queryset = Task.objects.all()
+        return Task.objects.filter(status=Task.Status.IN_PROGRESS)
 
 
 class AdminReClaimedTasksAPIView(AdminTasksListAPIView):
+    """shows only reclaimed tasks"""
 
     def get_queryset(self):
-        return Task.objects.filter(is_reclaimed=True).filter(is_finally_rejected=False)
+        return Task.objects\
+            .filter(status=Task.Status.DECLINED)\
+            .filter(is_reclaimed=True)\
+            .filter(is_finally_rejected=False)
+
+
+class AdminAcceptDeclineTaskAPIView(UpdateAPIView):
+    """handles the acceptance or decline of user's task"""
+    serializer_class = AdminAcceptDeclineTaskSerializer
+    queryset = Task.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
 
