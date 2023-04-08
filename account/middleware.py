@@ -15,8 +15,6 @@ class UserAutoLogoutMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_anonymous:
-            return redirect('account:login')
         if not request.user.is_staff:
             time_now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
             last_time_active = request.session.get('last_time_active')
