@@ -33,6 +33,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'account.middleware.UserAutoLogoutMiddleware',
 ]
 
 ROOT_URLCONF = 'helpdesk.urls'
@@ -92,7 +93,7 @@ STATIC_ROOT = BASE_DIR / 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_COOKIE_AGE = 60  # 60 seconds or 1 minute
+# SESSION_COOKIE_AGE = 60  # 60 seconds
 # SESSION_SAVE_EVERY_REQUEST = True
 
 REST_FRAMEWORK = {
@@ -120,3 +121,5 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1: 3000',
     'http://127.0.0.1: 8000',
 ]
+
+FORCE_LOGOUT_USER = 60  # 60 seconds

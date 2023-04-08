@@ -50,10 +50,9 @@ class TaskCreateView(UserPassesTestMixin, CreateView):
             new_task.author_id = request.user.id
             new_task.status = Task.Status.IN_PROGRESS
             new_task.save()
-            messages.add_message(request, messages.SUCCESS, f'task was created')
+            messages.add_message(request, messages.SUCCESS, 'task was created')
             return redirect('task:index')
-        else:
-            messages.add_message(request, messages.ERROR, f'there was an error while creating the task')
+        messages.add_message(request, messages.ERROR, 'there was an error while creating the task')
         return render(request, 'tasks/create_new_task.html', {'form': form})
 
     def test_func(self):
@@ -99,14 +98,16 @@ class AdminTasksView(CreateCommentMixin, UserPassesTestMixin, ListView):
                 if cd['decision'] == 'True':
                     task.status = Task.Status.CONFIRMED
                     task.save()
+                    messages.add_message(request, messages.SUCCESS, 'you confirmed the task')
                 else:
                     reason = cd['reason']
                     if reason:
                         task.status = Task.Status.DECLINED
                         task.save()
                         ReasonsToDecline.objects.create(task_id=task.id, reason=reason)
+                        messages.add_message(request, messages.SUCCESS, 'you declined the task')
                     else:
-                        messages.add_message(request, messages.ERROR, f'You must indicate reason to decline')
+                        messages.add_message(request, messages.ERROR, 'You must indicate reason to decline')
         return redirect('task:admin_task')
 
     def test_func(self):
@@ -117,7 +118,7 @@ class AdminTasksView(CreateCommentMixin, UserPassesTestMixin, ListView):
 
 
 class AdminTasksDeclinedView(AdminTasksView):
-
+    """use to finally decline or accept reclaimed tasks, doesn't require comment to deny"""
     def get_queryset(self):
         return self.model.objects\
             .filter(status=Task.Status.DECLINED)\
@@ -131,10 +132,11 @@ class AdminTasksDeclinedView(AdminTasksView):
             task = get_object_or_404(Task, pk=request.POST.get('task_id'))
             if cd['decision'] == 'True':
                 task.status = Task.Status.CONFIRMED
+                task.is_reclaimed = False
                 task.save()
-                messages.add_message(request, messages.SUCCESS, f'the task has been confirmed')
+                messages.add_message(request, messages.SUCCESS, 'the task has been confirmed')
             else:
                 task.is_finally_rejected = True
                 task.save()
-                messages.add_message(request, messages.SUCCESS, f'the task has been finally rejected')
+                messages.add_message(request, messages.SUCCESS, 'the task has been finally rejected')
         return redirect('task:admin_task_declined')

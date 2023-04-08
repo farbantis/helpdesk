@@ -1,8 +1,7 @@
 from rest_framework import viewsets, permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.permissions import BasePermission
-
-from tasks.api.serializers import TaskRetrieveModifySerializer, TaskCreateSerializer, CommentCreateSerializer, \
+from tasks.api.serializers import TaskRetrieveModifySerializer, TaskCreateSerializer, CommentSerializer, \
     AdminAcceptDeclineTaskSerializer, TaskReclaimSerializer
 from tasks.models import Task, Comment
 
@@ -25,12 +24,12 @@ class TasksViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch']
 
     def get_queryset(self):
-        return super(TasksViewSet, self).get_queryset()\
+        return super().get_queryset()\
             .filter(author=self.request.user)\
             .filter(is_finally_rejected=False)
 
     def get_serializer_class(self):
-        print(f'self action is {self.action}')
+        """triggers the needed serializer based on http method"""
         if self.action in ['list', 'partial_update']:
             return TaskRetrieveModifySerializer
         elif self.action in ['create']:
@@ -43,7 +42,7 @@ class TasksViewSet(viewsets.ModelViewSet):
 class TaskReclaimAPIView(UpdateAPIView):
     """
     changes status to reclaimed for declined tasks, sets is_reclaimed to True
-    and gives error if required to set is_relaimed to False
+    and gives error if required to set is_reclaimed to False
     """
     serializer_class = TaskReclaimSerializer
     queryset = Task.objects.all()
@@ -52,7 +51,7 @@ class TaskReclaimAPIView(UpdateAPIView):
 
 class AddCommentAPIView(CreateAPIView):
     """adds comment to a task by user or admin"""
-    serializer_class = CommentCreateSerializer
+    serializer_class = CommentSerializer
     queryset = Comment.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 

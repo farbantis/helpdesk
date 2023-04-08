@@ -17,7 +17,7 @@
             Navigation:
             <div>Admin dashboard, welcome {{ request.user.username }}</div>
             <div><a href="{% url 'task:admin_task' %}">Active tasks</a></div>
-            <div><a href="{% url 'task:admin_task_declined' %}">Declined tasks</a></div>
+            <div><a href="{% url 'task:admin_task_declined' %}">Reclaimed tasks</a></div>
             <div><a href="{% url 'account:logout' %}">LogOut</a></div>
         {% else %}
             {% if request.user.is_authenticated %}

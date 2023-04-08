@@ -5,19 +5,15 @@ from tasks.models import Task, Comment, ReasonsToDecline
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'text_of_comment')
-
-
-class CommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('task', 'text_of_comment')
+        fields = ('id', 'task', 'text_of_comment')
 
     def validate(self, attrs):
         """checks if the task is active to add comment"""
-        task = self.instance
+        print(f'task is {attrs}')
+        task = attrs['task']
         if task.status != Task.Status.IN_PROGRESS:
-            serializers.ValidationError('comments are available to tasks in progress only')
+            raise serializers.ValidationError('comments are available to tasks in progress only')
+        return attrs
 
 
 class TaskRetrieveModifySerializer(serializers.ModelSerializer):

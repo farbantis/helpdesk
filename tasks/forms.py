@@ -18,11 +18,22 @@ class CommentForm(forms.ModelForm):
 
 
 class AdminAcceptDenyForm(forms.ModelForm):
-    decision = forms.CharField(widget=forms.HiddenInput)
+    DECISION_CHOICES = [
+        ('', 'Make a choice'),
+        (True, 'Accept'),
+        (False, 'Decline'),
+    ]
+    decision = forms.ChoiceField(choices=DECISION_CHOICES)
 
     class Meta:
         model = ReasonsToDecline
         fields = ('reason', 'decision')
         widgets = {
-            'reason': forms.Textarea(attrs={'rows': 1, 'cols': 50})
+            'reason': forms.Textarea(attrs={'rows': 1, 'cols': 50, 'required': False})
         }
+
+    # def clean(self):
+    #     cd = super().clean()
+    #     print(f'cd is {cd}')
+    #     return cd
+

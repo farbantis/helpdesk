@@ -16,8 +16,7 @@ class UserLoginView(LoginView):
         """redirects user depending on role"""
         if self.request.user.is_staff:
             return '/admin_tasks/'
-        else:
-            return '/'
+        return '/'
 
 
 class RegisterUserView(CreateView):
@@ -31,15 +30,15 @@ class RegisterUserView(CreateView):
             new_user = form.save(commit=False)
             new_user.set_password(form.cleaned_data['password1'])
             new_user.save()
-            messages.add_message(request, messages.SUCCESS, f'user was created')
+            messages.add_message(request, messages.SUCCESS, 'user was created')
             return redirect('account:login')
-        else:
-            form = UserRegistrationForm()
-            messages.add_message(request, messages.ERROR, f'wrong data, please re-enter')
+        form = UserRegistrationForm()
+        messages.add_message(request, messages.ERROR, 'wrong data, please re-enter')
         return render(request, 'account/user_register.html', {'form': form})
 
 
 class UserLogoutView(LogoutView):
     """logout user"""
     next_page = reverse_lazy('account:login')
+
 
