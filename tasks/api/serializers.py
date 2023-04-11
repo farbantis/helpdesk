@@ -1,15 +1,26 @@
 from rest_framework import serializers
+
+from account.models import User
 from tasks.models import Task, Comment, ReasonsToDecline
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', )
+
+
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
     class Meta:
         model = Comment
-        fields = ('id', 'task', 'text_of_comment')
+        fields = ('id', 'author', 'task', 'text_of_comment')
+
+    def get_author(self, object):
+        return object.author.username
 
     def validate(self, attrs):
         """checks if the task is active to add comment"""
-        print(f'task is {attrs}')
         task = attrs['task']
         if task.status != Task.Status.IN_PROGRESS:
             raise serializers.ValidationError('comments are available to tasks in progress only')
@@ -39,11 +50,11 @@ class TaskReclaimSerializer(serializers.ModelSerializer):
         model = Task
         fields = ('is_reclaimed', )
 
-    def validate_task(self, value):
-        print(f'validating reclaim serializer value is {value}')
+    def validate(self, attrs):
         task = self.instance
-        if not value or task.status != Task.Status.DECLINED:
-            serializers.ValidationError('invalid data')
+        if task.status != Task.Status.DECLINED:
+            raise serializers.ValidationError('invalid data')
+        return attrs
 
 
 class ReasonToDeclineSerializer(serializers.ModelSerializer):
@@ -63,8 +74,6 @@ class AdminAcceptDeclineTaskSerializer(serializers.ModelSerializer):
         task = self.instance
         status = data.get('status')
         reason = data.get('reason')
-        print(f'validating, task, status, reason is {task}, {status}, {reason}') # task text, D, None
-        print(f'task.status = {task.status}')  # D
         if (task.status != Task.Status.IN_PROGRESS) and (not task.is_reclaimed):
             raise serializers.ValidationError(f'It is not allowed to change status of {task.status}')
         if status not in (Task.Status.DECLINED, Task.Status.CONFIRMED):

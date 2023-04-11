@@ -33,7 +33,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'account.middleware.UserAutoLogoutMiddleware',
+    # 'account.middleware.UserAutoLogoutMiddleware',
 ]
 
 ROOT_URLCONF = 'helpdesk.urls'
@@ -102,10 +102,6 @@ REST_FRAMEWORK = {
     ],
     #'DEFAULT_AUTH_TOKEN_EXPIRY': datetime.timedelta(minutes=1)
 }
-
-# JWT_AUTH = {
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=1)
-# }
 
 
 CORS_ALLOW_ALL_ORIGINS: True

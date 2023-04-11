@@ -6,9 +6,9 @@ from account.api.serializers import CreateUserSerializer
 from account.models import User
 
 
-class UserAuthToken(ObtainAuthToken):
-    def get_success_url(self):
-        pass
+# class UserAuthToken(ObtainAuthToken):
+#     def get_success_url(self):
+#         pass
 
 
 class CreateUserAPIView(CreateAPIView):
@@ -18,10 +18,7 @@ class CreateUserAPIView(CreateAPIView):
     http_method_names = ['post']
 
 
-
-
-
 class LogoutAPIView(APIView):
-
+    """logs out user"""
     def post(self, request):
         logout(request)
