@@ -31,9 +31,3 @@ class AdminAcceptDenyForm(forms.ModelForm):
         widgets = {
             'reason': forms.Textarea(attrs={'rows': 1, 'cols': 50, 'required': False})
         }
-
-    # def clean(self):
-    #     cd = super().clean()
-    #     print(f'cd is {cd}')
-    #     return cd
-

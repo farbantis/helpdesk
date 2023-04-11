@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import User
-from account.forms import UserLoginForm, UserRegistrationForm
+from .forms import UserLoginForm, UserRegistrationForm
 
 
 class UserLoginView(LoginView):
@@ -15,11 +15,11 @@ class UserLoginView(LoginView):
     def get_redirect_url(self):
         """redirects user depending on role"""
         if self.request.user.is_staff:
-            return '/admin_tasks/'
-        return '/'
+            return reverse_lazy('task:admin_task')
+        return reverse_lazy('task:index')
 
 
-class RegisterUserView(CreateView):
+class UserRegisterView(CreateView):
     template_name = 'account/user_register.html'
     model = User
     form_class = UserRegistrationForm

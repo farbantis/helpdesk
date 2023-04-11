@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from account.models import User
 from tasks.models import Task, Comment, ReasonsToDecline
 
@@ -12,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = ('id', 'author', 'task', 'text_of_comment')
@@ -60,26 +60,40 @@ class TaskReclaimSerializer(serializers.ModelSerializer):
 class ReasonToDeclineSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReasonsToDecline
-        fields = ('task', 'reason', )
+        fields = ('reason', )
 
 
 class AdminAcceptDeclineTaskSerializer(serializers.ModelSerializer):
-    reason = ReasonToDeclineSerializer
+    reason = ReasonToDeclineSerializer(required=False)
 
     class Meta:
         model = Task
-        fields = ('id', 'status', )
+        fields = ('id', 'status', 'reason')
 
     def validate(self, data):
         task = self.instance
         status = data.get('status')
         reason = data.get('reason')
         if (task.status != Task.Status.IN_PROGRESS) and (not task.is_reclaimed):
-            raise serializers.ValidationError(f'It is not allowed to change status of {task.status}')
+            raise serializers.ValidationError('It is not allowed to change this status')
         if status not in (Task.Status.DECLINED, Task.Status.CONFIRMED):
-            raise serializers.ValidationError('Status doesnt exist')
-        if task.status == Task.Status.DECLINED and not reason:
+            raise serializers.ValidationError('You can either accept or decline')
+        if (status == Task.Status.DECLINED) and (not reason) and (not task.is_reclaimed):
             raise serializers.ValidationError('reason is required if task is declined')
+        return data
+
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get('status', instance.status)
+        reason = validated_data.get('reason')
+        task = instance
+        if reason:
+            reason = reason.get('reason')
+            ReasonsToDecline.objects.create(task=task, reason=reason)
+        if task.is_reclaimed:
+            task.is_finally_rejected = True
+            task.save()
+        instance.save()
+        return instance
 
 
 

@@ -30,10 +30,6 @@
         {% endif %}
     </div>
     <div class="main">
-        {#        {% if request.user.is_staff %}#}
-        {% block staff %}
-        {% endblock %}
-        {#        {% else %}#}
         {% block user %}
         {% endblock %}
         {#        {% endif %}#}
@@ -41,14 +37,9 @@
 </div>
 
 
-
 {% block main %}
-
 {% endblock %}
 
-
-{% block admin %}
-{% endblock %}
 
 </body>
 </html>

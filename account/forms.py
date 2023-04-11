@@ -6,14 +6,14 @@ class UserLoginForm(AuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'login_username_inner', 'placeholder': 'email'})
+        self.fields['username'].widget.attrs.update({'class': 'login_username_inner', 'placeholder': 'username'})
         self.fields['password'].widget.attrs.update({'class': 'login_password_inner', 'placeholder': 'password'})
 
 
 class UserRegistrationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
-        super(UserRegistrationForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'placeholder': 'username'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'password'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'repeat password'})

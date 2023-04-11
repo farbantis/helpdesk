@@ -16,6 +16,7 @@ class UserAutoLogoutMiddleware:
 
     def __call__(self, request):
         if not request.user.is_staff:
+            print(f'path: {request.path}, {"api" in request.path}')
             time_now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
             last_time_active = request.session.get('last_time_active')
             if last_time_active:
