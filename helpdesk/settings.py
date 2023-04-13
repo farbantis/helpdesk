@@ -1,6 +1,7 @@
 import datetime
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-qlw3-hx@ciy99zf^5!@%$t0$z!=%d6m-pg6%6#nqd$odw^*-xz'
@@ -27,13 +28,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'account.middleware.UserAutoLogoutMiddleware',
+    'account.middleware.UserAutoLogoutMiddleware',
 ]
 
 ROOT_URLCONF = 'helpdesk.urls'
@@ -98,24 +98,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'account.api.authentication.CustomTokenAuthentication'
+
     ],
     #'DEFAULT_AUTH_TOKEN_EXPIRY': datetime.timedelta(minutes=1)
 }
 
-
-CORS_ALLOW_ALL_ORIGINS: True
-CORS_ORIGIN_ALLOW_ALL: True
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'http://localhost:80',
-    'http://localhost',
-    'https://localhost:3000',
-    'http://mysite.com:3000',
-    'http://127.0.0.1: 3000',
-    'http://127.0.0.1: 8000',
-]
-
 FORCE_LOGOUT_USER = 60  # 60 seconds
+FORCE_KILL_TOKEN = 600  # 60 seconds

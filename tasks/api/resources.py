@@ -6,11 +6,6 @@ from tasks.api.serializers import TaskRetrieveModifySerializer, TaskCreateSerial
 from tasks.models import Task, Comment
 
 
-class Tested(ListAPIView):
-    serializer_class = TaskCreateSerializer
-    queryset = Task.objects.all()
-
-
 class IsOrdinaryUser(BasePermission):
     """selects only logged in users who are not staff"""
     def has_permission(self, request, view):

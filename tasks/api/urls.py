@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from tasks.api.resources import TasksViewSet, AddCommentAPIView, AdminAcceptDeclineTaskAPIView, AdminTasksListAPIView, \
-    TaskReclaimAPIView, Tested, AdminReClaimedTasksAPIView
+    TaskReclaimAPIView, AdminReClaimedTasksAPIView
 
 router = routers.SimpleRouter()
 router.register(r'user_tasks', TasksViewSet)
@@ -14,5 +14,4 @@ urlpatterns += [
     path('admin_tasks/', AdminTasksListAPIView.as_view()),
     path('admin_reclaimed_tasks/', AdminReClaimedTasksAPIView.as_view()),
     path('accept_or_decline/<int:pk>/', AdminAcceptDeclineTaskAPIView.as_view()),
-    path('test/', Tested.as_view())
 ]
