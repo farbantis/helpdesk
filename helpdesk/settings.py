@@ -92,10 +92,6 @@ STATIC_ROOT = BASE_DIR / 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_COOKIE_AGE = 60  # 60 seconds
-# SESSION_SAVE_EVERY_REQUEST = True
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'account.api.authentication.CustomTokenAuthentication'
@@ -105,4 +101,4 @@ REST_FRAMEWORK = {
 }
 
 FORCE_LOGOUT_USER = 60  # 60 seconds
-FORCE_KILL_TOKEN = 600  # 60 seconds
+FORCE_KILL_TOKEN = 60  # 60 seconds

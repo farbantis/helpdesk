@@ -21,7 +21,6 @@ class UserAutoLogoutMiddleware:
             if last_time_active:
                 last_time_active = datetime.strptime(last_time_active, "%Y-%m-%d %H:%M:%S")
                 time_passed_since_last_request = datetime.strptime(time_now, "%Y-%m-%d %H:%M:%S") - last_time_active
-                print(f'time is {time_passed_since_last_request}')
                 if time_passed_since_last_request.seconds > settings.FORCE_LOGOUT_USER:
                     logout(request)
                     messages.add_message(request, messages.INFO, 'you have been auto logged off due to inactivity')

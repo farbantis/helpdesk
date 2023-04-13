@@ -3,6 +3,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from account.api.serializers import CreateUserSerializer
 from account.models import User
+from rest_framework.authtoken.models import Token
 
 
 class CreateUserAPIView(CreateAPIView):
@@ -15,4 +16,6 @@ class CreateUserAPIView(CreateAPIView):
 class LogoutAPIView(APIView):
     """logs out user"""
     def post(self, request):
-        logout(request)
+        token = Token.objects.get(user=request.user)
+        token.delete()
+        # logout(request)

@@ -19,11 +19,9 @@ class CustomTokenAuthentication(TokenAuthentication):
         if not token.user.is_active:
             raise AuthenticationFailed({'error': 'User inactive or deleted'})
 
-        print(f'token.user {token.user.is_authenticated}, {type(token.user)}')
         if not token.user.is_staff:
             last_activity_time = token.created
             time_difference = datetime.now(timezone.utc) - last_activity_time
-            print(f'time dif {time_difference}')
             if time_difference > timedelta(seconds=settings.FORCE_KILL_TOKEN):
                 token.delete()
                 raise AuthenticationFailed('Token has expired due to inactivity')
